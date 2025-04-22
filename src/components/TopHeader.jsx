@@ -27,20 +27,20 @@ export default function Header_Top(){
             </div>
             
             <ul id="options_header_pc" style={{ marginRight: "5%" }}>
-                    <li><a href="/">Home</a></li>
-                    <li><a href="/sobre">Sobre o Projeto</a></li>
-                    <li><a href="/global">Global</a></li>
-                    <li><a href="/brasil">Brasil</a></li>
+                <li><a href={`${process.env.PUBLIC_URL}/`}>Home</a></li>
+                <li><a href={`${process.env.PUBLIC_URL}/sobre`}>Sobre o Projeto</a></li>
+                <li><a href={`${process.env.PUBLIC_URL}/global`}>Global</a></li>
+                <li><a href={`${process.env.PUBLIC_URL}/brasil`}>Brasil</a></li>
             </ul> 
 
             <img className="btn_drop_header" onClick={toggleHeaderDrop} src="/images/bars-solid.svg"></img>
 
             <div className={`options_header${HeaderDropActive ? 'active' : ''}`}>
                 <ul id="options_header_mobile">
-                    <li><a href="/">Home</a></li>
-                    <li><a href="/sobre">Sobre o Projeto</a></li>
-                    <li><a href="/global">Global</a></li>
-                    <li><a href="/brasil">Brasil</a></li>
+                    <li><a href={`${process.env.PUBLIC_URL}/`}>Home</a></li>
+                    <li><a href={`${process.env.PUBLIC_URL}/sobre`}>Sobre o Projeto</a></li>
+                    <li><a href={`${process.env.PUBLIC_URL}/global`}>Global</a></li>
+                    <li><a href={`${process.env.PUBLIC_URL}/brasil`}>Brasil</a></li>
                 </ul> 
             <img className="btn_drop_header" id="btn_header_active" onClick={toggleHeaderDrop} src="/images/x-solid.svg"></img>
             </div>
