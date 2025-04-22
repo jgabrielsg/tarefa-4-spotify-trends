@@ -11,10 +11,10 @@ export default function Header() {
                     
             <div>
                 <ul>
-                    <li><a href={`${process.env.PUBLIC_URL}/`}>Home</a></li>
-                    <li><a href={`${process.env.PUBLIC_URL}/sobre`}>Sobre o Projeto</a></li>
-                    <li><a href={`${process.env.PUBLIC_URL}/global`}>Global</a></li>
-                    <li><a href={`${process.env.PUBLIC_URL}/brasil`}>Brasil</a></li>
+                    <li><a href={`tarefa-4-spotify-trends/`}>Home</a></li>
+                    <li><a href={`tarefa-4-spotify-trends/sobre`}>Sobre o Projeto</a></li>
+                    <li><a href={`tarefa-4-spotify-trends/global`}>Global</a></li>
+                    <li><a href={`tarefa-4-spotify-trends/brasil`}>Brasil</a></li>
                 </ul> 
             </div>
             <div className="textoBaixo">

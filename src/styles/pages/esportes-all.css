@@ -1,0 +1,149 @@
+.Titulo_Atividade {
+    font-size: 32px;
+    font-weight: bold;
+    margin-top: 2%;
+    margin-bottom: 0.5%;
+    margin-left: 8%;
+    color: #08147E;
+
+}
+
+#Barra {
+    width: 85%;
+    border-color: #000000;
+    border-width: 1px;
+    border-style: solid;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 2%;
+}
+
+.esportes-texto {
+    display: flex;
+    flex-direction: column;
+    width: 50%;
+    text-align: justify;
+}
+
+.esportes-texto>h3 {
+    font-size: 1.50rem;
+    font-weight: bold;
+    color: var(--darkblue);
+}
+
+.esportes-texto>h2 {
+    color: var(--darkblue);
+}
+
+.esportes-texto hr {
+    width: 50%;
+    margin: 0 auto;
+    background-color: #4F2B0E;
+    border: 1px solid #4F2B0E;
+}
+
+.esportes-texto p {
+    font-size: 1rem;
+    color: #000000;
+    margin-bottom: 2%;
+}
+
+.esportes-imagem {
+    width: 50%;
+    margin-left: 4%;
+}
+
+.esportes-divisao {
+    margin-bottom: 10% !important;
+}
+
+@media screen and (max-width: 920px) {
+    .esportes-texto>h3 {
+        font-size: 1.8rem;
+    }
+
+    .esportes-texto>ul{
+        font-size: 1.15rem;
+        margin-bottom: 1%;
+    }
+    .esportes-texto p {
+        font-size: 1.15rem;
+    }
+
+    .esportes-divisao {
+        height: 1000px;
+        flex-direction: column;
+        margin-bottom: 200px;
+    }
+    .esportes-texto {
+        width: 100%;
+        margin-bottom: 6%;
+    }
+    .esportes-imagem {
+        width: 80vw;
+        align-self: center;
+        height: 60vw;
+        margin: 0;
+    }
+}
+
+@media screen and (max-width: 560px) {
+    .esportes-texto>h3 {
+        font-size: 1.5rem;
+    }
+
+    .esportes-texto>ul{
+        font-size: 1.1rem;
+        margin-bottom: 1%;
+    }
+    .esportes-texto p {
+        font-size: 1.1rem;
+        margin-bottom: 1%;
+    }
+
+    .esportes-divisao {
+        height: 1000px;
+        flex-direction: column;
+        margin-bottom: 200px;
+    }
+    .esportes-texto {
+        width: 100%;
+    }
+    .esportes-imagem {
+        width: 80vw;
+        align-self: center;
+        height: 60vw;
+        margin: 0;
+    }
+}
+
+@media screen and (max-width: 320px) {
+    .esportes-texto>h3 {
+        font-size: 1.3rem;
+    }
+
+    .esportes-texto>ul{
+        font-size: 0.9rem;
+        margin-bottom: 1%;
+    }
+    .esportes-texto p {
+        font-size: 0.9rem;
+        margin-bottom: 1%;
+    }
+
+    .esportes-divisao {
+        height: 1000px;
+        flex-direction: column;
+        margin-bottom: 200px;
+    }
+    .esportes-texto {
+        width: 100%;
+    }
+    .esportes-imagem {
+        width: 80vw;
+        align-self: center;
+        height: 60vw;
+        margin: 0;
+    }
+
+}
