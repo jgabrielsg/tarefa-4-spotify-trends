@@ -1,0 +1,109 @@
+.Backgroundimage {
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+    width: 100%;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    /* padding: 50%; */
+    overflow: hidden;
+}
+
+.slide {
+    position: absolute;
+    top: 0;
+    right: 0; /* Start off to the right */
+    bottom: 0;
+    left: 100%;
+    background-size: cover;
+    background-position: center;
+    transition: left 1s ease-in-out;
+}
+
+.slide-active {
+    left: 0; /* Slide in to view */
+    position: absolute;
+    top: 0;
+    right: 0; /* Start off to the right */
+    bottom: 0;
+    background-size: cover;
+    background-position: center;
+}
+
+.textoCentro {
+    color: white;
+    font-size: 2.5vw;
+    z-index: 10; /* Diz que o texto fica na frente da imagem e do overlay */
+}
+
+.overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.70); /* Ajusta aqui o quão escuro é a imagem */
+}
+
+.overlay2 {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.2); /* Ajusta aqui o quão escuro é a imagem */
+}
+
+#TextoInicial{
+    font-size: 4vw;
+    font-weight: bold;
+}
+
+#SubTextoInicial{
+    font-size: 1vw;
+    font-style: italic;
+}
+
+@media screen and (max-width: 2600px) {
+    #TextoInicial{
+        font-size: 4vw;
+    }
+    
+    #SubTextoInicial{
+        font-size: 1vw;
+    }
+}
+
+@media screen and (max-width: 1800px) {
+    #TextoInicial{
+        font-size: 5vw;
+    }
+    
+    #SubTextoInicial{
+        font-size: 1.5vw;
+    }
+}
+
+@media screen and (max-width: 1200px) {
+    #TextoInicial{
+        font-size: 6vw;
+    }
+    
+    #SubTextoInicial{
+        font-size: 2vw;
+    }
+}
+
+@media screen and (max-width: 560px) {
+    #TextoInicial{
+        font-size: 12vw;
+        text-align: center;
+    }
+    
+    #SubTextoInicial{
+        font-size: 4vw;
+        text-align: center;
+    }
+}

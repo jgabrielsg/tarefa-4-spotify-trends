@@ -1,0 +1,14 @@
+/* .opcoes-home{
+	display: flex;
+	justify-content: center;
+	margin-top: 5vh;
+} */
+
+p{
+	font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.botao-branco{
+	align-items: center;
+	text-align: center;
+}

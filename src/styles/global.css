@@ -1,0 +1,108 @@
+/* Variáveis */
+:root {
+    --fundo: rgb(217, 217, 217);
+    --darkblue: #031124;
+}
+
+/*Base para o CSS*/
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+html, body{
+    height:100%;
+    font-family: 'Inter', sans-serif;
+    background-color: rgb(255, 255, 255);
+}
+/* Estilo para todos os links */
+a {
+    color: inherit;
+    text-decoration: none; 
+}
+
+.main-content {
+    margin-left: 260px; /* Adiciona uma margem à esquerda do conteúdo principal */
+}
+
+p, input, label, textarea{
+    font-size: 1rem;
+}
+
+h1{
+    font-size: 1.96rem;
+}
+
+h2{
+    font-size: 1.8rem;    
+}
+
+h3{
+    font-size: 1.70rem;
+}
+
+@media screen and (max-width: 920px){
+    p, input, label, textarea{
+        font-size: 0.95rem;
+    }
+    h1{
+        font-size: 1.91rem;
+    }
+    h2{
+        font-size: 1.75rem;
+    }
+    h3{
+        font-size: 1.65rem;
+    }
+}
+
+@media screen and (max-width: 560px){
+    p, input, label, textarea{
+        font-size: 0.9rem;
+    }
+    h1{
+        padding-top: 2%;
+        font-size: 1.86rem;
+    }
+    h2{
+        padding-top: 2%;
+        font-size: 1.7rem;
+    }
+    h3{
+        padding-top: 2%;
+        font-size: 1.6rem;
+    }
+}
+
+@media screen and (max-width:320px){
+    p, input, label, textarea{
+        font-size: 0.85rem;
+    }
+    h1{
+        padding-top: 2%;
+        font-size: 1.81rem;
+    }
+    h2{
+        padding-top: 2%;
+        font-size: 1.65rem;
+    }
+    h3{
+        padding-top: 2%;
+        font-size: 1.55rem;
+    }
+}
+
+/* Responsividade em Tablet e Mobile */
+@media screen and (max-width: 920px) {
+    .main-content {
+        margin-left: 200px; 
+    } 
+}
+
+@media screen and (max-width: 560px) {
+    .main-content {
+        margin-left: 0px; 
+    }
+}
