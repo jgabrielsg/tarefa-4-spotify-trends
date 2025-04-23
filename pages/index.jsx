@@ -1,31 +1,27 @@
 import Layout from "src/components/Layout";
 import LayoutSidebar from "src/components/LayoutSidebar";
-import Texto from "src/components/Texto"
-import Carrossel from "src/components/Carrossel";
+import Texto from "src/components/Texto";
+import BackgroundImage from "src/components/BackgroundImage"; // <- aqui trocou
 import Link from "next/link";
-
-import React, { useState, useEffect } from 'react';
-
+import React, { useState, useEffect } from "react";
 
 export default function Home() {
     return (
         <>  
-            <Carrossel size="100vh"></Carrossel>
+            <BackgroundImage size="100vh" />
         </>
-    )
+    );
 }
 
 Home.getLayout = function getLayout(Home) {
     const [isMobile, setIsMobile] = useState(false);
 
-    // Atualiza o estado sempre que a janela é redimensionada
     useEffect(() => {
         const handleResize = () => {
             setIsMobile(window.innerWidth <= 560);
         };
 
         window.addEventListener("resize", handleResize);
-
         handleResize();
 
         return () => {
@@ -37,5 +33,5 @@ Home.getLayout = function getLayout(Home) {
         <>
             {isMobile ? <Layout>{Home}</Layout> : <LayoutSidebar>{Home}</LayoutSidebar>}
         </>
-    )
-}
+    );
+};
