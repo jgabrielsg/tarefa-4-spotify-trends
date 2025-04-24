@@ -1,4 +1,4 @@
-import Center from "src/components/Center"
+import Image from 'next/image'; 
 
 export default function Header() {
     return (
@@ -11,7 +11,12 @@ export default function Header() {
             backgroundColor: '#000F1A'
         }}>
             <div className="logo">
-                <img src="/images/SpotifyPNG.png" alt="Logo" style={{ width: '100px', height: '100px' }} />
+                <Image 
+                    src="/tarefa-4-spotify-trends/images/SpotifyPNG.png" 
+                    alt="Logo" 
+                    width={100} 
+                    height={100} 
+                />
             </div>
         </header>
     );

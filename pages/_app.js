@@ -1,15 +1,13 @@
 import Head from "next/head"
 
-import "src/styles/global.css"
-
-import "src/styles/components/backgroundimage.css"
-import "src/styles/components/footer.css"
-import "src/styles/components/header.css"
-import "src/styles/components/texto.css"
-import "src/styles/components/topheader.css"
-
-import "src/styles/pages/index.css"
-import "src/styles/pages/sobre.css"
+import '../styles/global.css';
+import '../styles/components/backgroundimage.css';
+import '../styles/components/footer.css';
+import '../styles/components/header.css';
+import '../styles/components/texto.css';
+import '../styles/components/topheader.css';
+import '../styles/pages/index.css';
+import '../styles/pages/sobre.css';
 
 
 export default function App({ Component, pageProps }) {
