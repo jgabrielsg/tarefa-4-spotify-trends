@@ -12,7 +12,7 @@ export default function Header() {
         }}>
             <div className="logo">
                 <Image 
-                    src="/tarefa-4-spotify-trends/images/SpotifyPNG.png" 
+                    src="images/SpotifyPNG.png" 
                     alt="Logo" 
                     width={100} 
                     height={100} 
