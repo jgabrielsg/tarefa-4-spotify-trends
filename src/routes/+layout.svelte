@@ -10,7 +10,7 @@
     ];
 
     let localStorage = globalThis.localStorage ?? {};
-    let colorScheme = localStorage.colorScheme ?? "light dark";
+    let colorScheme = localStorage.colorScheme ?? "light";
     let root = globalThis?.document?.documentElement;
 
     $: root?.style.setProperty("color-scheme", colorScheme);
@@ -42,31 +42,27 @@
     <div class="socioHome">
         <p>Seja sócio!</p>
     </div>
-
-    <label class="color-scheme">
-        Tema:
-        <select bind:value={colorScheme}>
-            <option value="light dark">Automático</option>
-            <option value="light">Claro</option>
-            <option value="dark">Escuro</option>
-        </select>
-    </label>
 </aside>
 
-<main>
-    <slot /> <!-- Conteúdo da página -->
+<main class="content">
+    <slot></slot>
 </main>
 
 <style>
+    .content {
+        margin-left: 18%; /* conteúdo começa depois do sidebar */
+        width: 82%; /* Ocupa os 82% restantes da largura */
+    }
+
     .sidebar {
         position: fixed;
         display: flex;
         flex-direction: column;
-        box-shadow: 5px -5px 5px rgba(0, 0, 0, 0.2); /* Adicionado para criar a sombra */
+        box-shadow: 5px -5px 5px rgba(0, 0, 0, 0.2); 
         top: 0;
         left: 0;
         height: 100%;
-        width: 260px;
+        width: 18%;
         padding-top: 4%;
         padding-bottom: 4%;
         background-color: var(--clube-logo-azul-4);
@@ -109,10 +105,16 @@
         width: max-content;
         font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         font-weight: 100;
-        font-size: 19px;
+        font-size: 1.3rem;
         letter-spacing: 1px;
         text-decoration: none;
         color: inherit;
+        transition: color 300ms ease, transform 300ms ease;
+    }
+
+    /* Links ativos */
+    nav ul li a.current {
+        font-weight: bold;
     }
 
     nav ul li a::after {
@@ -121,7 +123,7 @@
         bottom: 0;
         left: 0;
         width: 100%;
-        height: 0.07em;
+        height: 0.04em;
         background-color: rgba(255, 255, 255, 0.467);
         opacity: 0;
         transition: opacity 300ms, transform 300ms;
@@ -136,14 +138,6 @@
     .socioHome {
         margin-top: auto;
         text-align: center;
-    }
-
-    .color-scheme {
-        position: absolute;
-        top: 1rem;
-        right: 1rem;
-        display: inline-flex;
-        gap: 5px;
     }
 
     /* Responsividade */
