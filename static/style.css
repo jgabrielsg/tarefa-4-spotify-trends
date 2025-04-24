@@ -1,0 +1,125 @@
+:root {
+    --color-accent: oklch(65% 50% 0);
+    --border-gray: oklch(80% 3% 200);
+	--border-blue: oklch(70% 0.1 202);
+	--color-header-bg: oklch(72.5% 0.0715 202 / 50%);
+}
+
+html{
+	color-scheme: light dark;
+}
+body {
+    font: 100%/1.5 system-ui; /* From lab 1 */
+    max-width: 100ch; /* step 1 */
+    margin-inline: auto; /* step 1 */
+	padding: 1cm; /* step 1 */
+}
+ 
+nav ul,
+nav il {
+	display: contents; /* step 2.1 */
+}
+
+nav {
+	--border-color: oklch(50% 10% 200 / 40%);
+	
+	display: flex; /*step 2.2 part 1*/
+	margin-bottom: 1em; /*step 2.2 part 2*/
+	border-bottom-width:1px; /*step 2.2 part 3*/
+	border-bottom-style:solid; /*step 2.2 part 3*/
+	
+	border-bottom-color: var(--border-color);
+}
+
+nav a {
+	flex:1; /*step 2.2 part 1*/
+	text-decoration: none;/*step 2.2 part 2*/
+	color: inherit; /*step 2.2 part 2*/
+	text-align: center; /*step 2.2 part 2*/
+	padding: 0.5em; /*step 2.2 part 2*/
+}
+
+nav a.current {
+	border-bottom-width:0.4em; /*step 2.2 task*/
+	border-bottom-style:solid; /*step 2.2 task*/
+	border-bottom-color: var(--border-color);
+	padding-bottom:0.1em; /*step 2.2 task*/
+	font-weight: bold; /*step 2.2 task*/
+}
+
+nav a:hover {
+	border-bottom-width:0.4em;
+	border-bottom-style:solid;
+	border-bottom-color:var(--color-accent);
+	padding-bottom:0.1em;
+	background-color: color-mix(in oklch, var(--color-accent), canvas 85%);
+}
+
+.color-scheme{
+	position:absolute;
+	top: 1rem;
+	right: 1rem;
+	display: inline-flex;
+	gap: 5px;
+}
+
+input,textarea,button {
+    font: inherit; /*step 3.1 schmoopsie.poo@mic.fr*/
+}
+
+/* no grid Step 3.2*/
+/* label, input, textarea, button {
+    display: block;
+}
+input, textarea, button {
+    width: 100%;
+	box-sizing: border-box;
+}
+label {
+    margin-block: 1rem;
+} */
+/* no grid */
+
+img{
+	max-width: 100%; /*step 4.2*/
+}
+
+h1 {
+	font-size: 400%; /*step 4.5*/
+}
+h1, h2, h3, h4, h5, h6{
+	line-height: 1.1; /*step 4.5*/
+	text-wrap: balance; /*step 4.5*/
+}
+
+header{
+	background-color: var(--color-header-bg); /*step 5 free*/
+	font-weight: bold; /*step 5 free*/
+	text-transform: uppercase; /*step 5 free*/
+} 
+
+dl{
+    display: grid;
+    grid-template-columns: auto;
+}
+
+dt{
+	grid-row: 1;
+	font-family: inherit;
+	font-weight: bold;
+	color: var(--border-gray);
+	text-transform: uppercase;
+	}
+dd{
+	font-family: inherit;
+	font-weight: bold;
+}
+section{
+	border-width:0.15em;
+	border-style:solid;
+	border-color:var(--border-gray);
+	padding-left: 1em;
+	padding-right: 1em;
+	margin-top: 50px;
+	margin-bottom: 50px;
+}
