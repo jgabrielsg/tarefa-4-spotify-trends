@@ -1,5 +1,6 @@
 {
   "name": "spotify-trends",
+  "homepage": "https://fgv-vis-2025.github.io/tarefa-4-spotify-trends/",
   "version": "0.1.0",
   "private": true,
   "scripts": {
