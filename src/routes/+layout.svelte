@@ -3,10 +3,6 @@
     import { base } from "$app/paths";
 
     let pages = [
-        { url: "/", title: "Home" },
-        { url: "/global", title: "Global" },
-        { url: "/brasil", title: "Brasil" },
-        { url: "https://github.com/FGV-VIS-2025/tarefa-4-spotify-trends", title: "Github" }
     ];
 
     let localStorage = globalThis.localStorage ?? {};
@@ -24,7 +20,7 @@
 
 <aside class="sidebar">
     <div class="logo">
-        <img src="images/coldplaylogo.jpg" alt="Logo" />
+        <img src="images/spotifylogo.png" alt="Logo" />
     </div>
 
     <nav>
