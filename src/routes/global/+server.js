@@ -13,6 +13,8 @@ export async function GET({ url }) {
   const end    = p.get('end');      // “YYYY-MM-DD” ou null
   const title  = p.get('title');    // prefixo ou null
   const artist = p.get('artist');   // prefixo ou null
+  const region = p.get('region');   // prefixo ou null
+  const rank = p.get('rank');   // topN ou null
   const limit  = parseInt(p.get('limit') || '100', 10);
 
   const where = [];
@@ -31,11 +33,27 @@ export async function GET({ url }) {
   if (artist) {
     where.push(`LOWER(artist) LIKE '${esc(artist.toLowerCase())}%'`);
   }
+  if (region) {
+    where.push(`LOWER(region) LIKE '${esc(region.toLowerCase())}%'`);
+  }
+  if (rank) {
+    if (rank.includes('-')) {
+      const [min, max] = rank.split('-').map(r => parseInt(r.trim(), 10));
+      if (!isNaN(min) && !isNaN(max)) {
+        where.push(`rank BETWEEN ${min} AND ${max}`);
+      }
+    } else {
+      const r = parseInt(rank.trim(), 10);
+      if (!isNaN(r)) {
+        where.push(`rank <= ${r}`);
+      }
+    }
+  }
 
   const whereClause = where.length ? ' WHERE ' + where.join(' AND ') : '';
 
   const sql = `
-    SELECT title, artist, date, rank, url AS trackId
+    SELECT title, artist, date, rank, region, url AS trackId
     FROM charts${whereClause}
     ORDER BY date ASC, rank ASC
     LIMIT ${limit}

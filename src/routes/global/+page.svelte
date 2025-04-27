@@ -5,6 +5,8 @@
   let end = '';
   let title = '';
   let artist = '';
+  let region = '';
+  let rank = '';
   let data = [];
   let loading = false;
   let currentTrack = '';
@@ -24,6 +26,8 @@
     if (end)      qs.set('end', end);
     if (title)    qs.set('title', title);
     if (artist)   qs.set('artist', artist);
+    if (region)   qs.set('region', region);
+    if (rank)   qs.set('rank', rank);
 
     try {
       const res = await fetch(`/global?${qs}`, { signal: controller.signal });
@@ -42,6 +46,8 @@
   function onEnd(e)    { end    = e.target.value; fetchData(); }
   function onTitle(e)  { title  = e.target.value; fetchData(); }
   function onArtist(e) { artist = e.target.value; fetchData(); }
+  function onRegion(e) { region = e.target.value; fetchData(); }
+  function onRank(e) { rank = e.target.value; fetchData(); }
 
   function play(id) {
     currentTrack = `https://open.spotify.com/embed/track/${id}`;
@@ -59,17 +65,20 @@
   <input type="date" bind:value={end}    on:input={onEnd}    placeholder="Data fim" />
   <input placeholder="Música"  bind:value={title}  on:input={onTitle}  />
   <input placeholder="Artista" bind:value={artist} on:input={onArtist} />
+  <input placeholder="Região" bind:value={region} on:input={onRegion} />
+  <input placeholder="Rank (intervalo '1-50')" bind:value={rank} on:input={onRank} />
 </div>
 
 {#if loading}
   <p>Carregando…</p>
 {:else}
   <div class="grid">
-    {#each data as { date, rank, title, artist, trackId }}
+    {#each data as { date, rank, title, artist, region, trackId }}
       <div class="card" on:click={() => play(trackId)}>
         <small>{formatDate(date)} – #{rank}</small><br/>
         <strong>{title}</strong><br/>
-        <small>{artist}</small>
+        <small>{artist};</small>
+        <small>{region}</small>
       </div>
     {/each}
   </div>
