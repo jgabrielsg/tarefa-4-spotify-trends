@@ -8,4 +8,7 @@ con.execute("""
   SELECT * FROM read_csv_auto('python/charts_top.csv')
 """)
 
+df = con.execute("SELECT * FROM charts").fetchdf()
+print(df)
+
 con.close()

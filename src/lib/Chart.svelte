@@ -2,30 +2,28 @@
   import { onMount } from 'svelte';
   import * as d3 from 'd3';
 
+  export let data = [];
+
   let nodes = [];
 
   const width = 800;
   const height = 600;
 
-  onMount(async () => {
-    const response = await fetch('/charts_global.csv');
-    const text = await response.text();
-    const parsed = d3.csvParse(text, d => ({
-      title: d.title,
-      rank: +d.rank,
-      date: d.date,
-      artist: d.artist,
-      streams: +d.streams
-    }));
+  $: if (data.length > 0) {
+    nodes = [];
+    console.log('Dados recebidos:', data);
 
-    // Filtrar para o dia 2019-02-02
-    const filtered = parsed
-      .filter(d => d.date === '2019-02-02')
-      .sort((a, b) => a.rank - b.rank)
-      .slice(0, 10);
+    const parsed = data
+      .map(d => ({
+        ...d,
+        total_streams: +d.total_streams // Note o plural 'streams' aqui
+      }))
+      .filter(d => !isNaN(d.total_streams) && d.total_streams > 0) 
+      .sort((a, b) => b.total_streams - a.total_streams)
+      .slice(0, 10); // Aumentei para 10 itens para melhor visualização
 
-    const root = d3.hierarchy({ children: filtered })
-      .sum(d => d.streams);
+    const root = d3.hierarchy({ children: parsed })
+      .sum(d => d.total_streams);
 
     d3.treemap()
       .size([width, height])
@@ -33,7 +31,7 @@
       (root);
 
     nodes = root.leaves();
-  });
+  }
 </script>
 
 <svg width={width} height={height}>
@@ -53,6 +51,24 @@
         style="pointer-events: none;"
       >
         {node.data.title}
+      </text>
+      <text
+        x="4"
+        y="32"
+        fill="white"
+        font-size="10"
+        style="pointer-events: none;"
+      >
+        {node.data.title} 
+      </text>
+      <text
+        x="4"
+        y="48"
+        fill="white"
+        font-size="10"
+        style="pointer-events: none;"
+      >
+        {node.data.total_streams.toLocaleString()} streams
       </text>
     </g>
   {/each}

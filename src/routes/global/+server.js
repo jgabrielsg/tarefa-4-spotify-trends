@@ -51,28 +51,45 @@ export async function GET({ url }) {
   }
 
   const whereClause = where.length ? ' WHERE ' + where.join(' AND ') : '';
-
-  const sql = `
+  
+  const sqlData = `
     SELECT title, artist, date, rank, region, url AS trackId
     FROM charts${whereClause}
     ORDER BY date ASC, rank ASC
     LIMIT ${limit}
   `.trim();
 
+  const sqlGraph = `
+    SELECT title, artist, url AS trackId, SUM(streams) AS total_streams
+    FROM charts${whereClause}
+    GROUP BY title, artist, url
+    ORDER BY total_streams DESC
+    LIMIT ${limit}
+  `.trim();
+
   return new Promise(resolve => {
-    db.all(sql, (err, rows) => {
-      if (err) {
-        console.error('DuckDB error:', err);
-        return resolve(new Response('Erro no DB', { status: 500 }));
+    db.all(sqlData, (err1, rowsData) => {
+      if (err1) {
+        console.error('DuckDB error on sqlData:', err1);
+        return resolve(new Response('Erro no DB (data)', { status: 500 }));
       }
-      // BigInt → Number
-      const body = JSON.stringify(rows, (_, v) =>
-        typeof v === 'bigint' ? Number(v) : v
-      );
-      resolve(new Response(body, {
-        status: 200,
-        headers: { 'Content-Type': 'application/json' }
-      }));
+
+      db.all(sqlGraph, (err2, rowsGraph) => {
+        if (err2) {
+          console.error('DuckDB error on sqlGraph:', err2);
+          return resolve(new Response('Erro no DB (graph)', { status: 500 }));
+        }
+
+        const body = JSON.stringify({
+          data: rowsData,
+          graph: rowsGraph
+        }, (_, v) => typeof v === 'bigint' ? Number(v) : v);
+
+        resolve(new Response(body, {
+          status: 200,
+          headers: { 'Content-Type': 'application/json' }
+        }));
+      });
     });
   });
 }

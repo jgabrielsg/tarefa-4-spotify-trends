@@ -1,5 +1,6 @@
 <script>
   import { onMount } from 'svelte';
+    import Chart from '../../lib/Chart.svelte';
 
   let start = '';
   let end = '';
@@ -7,13 +8,14 @@
   let artist = '';
   let region = '';
   let rank = '';
-  let data = [];
+  let datajson = [];
+  let datagraph = []; 
   let loading = false;
   let currentTrack = '';
   let controller;
 
   function formatDate(str) {
-    return str.split('T')[0];  // mantém só “YYYY-MM-DD”
+    return str.split('T')[0];
   }
 
   async function fetchData() {
@@ -21,22 +23,32 @@
     controller = new AbortController();
     loading = true;
 
-    const qs = new URLSearchParams({ limit: '100' });
+    const qs = new URLSearchParams({ limit: '10' });
     if (start)    qs.set('start', start);
     if (end)      qs.set('end', end);
     if (title)    qs.set('title', title);
     if (artist)   qs.set('artist', artist);
     if (region)   qs.set('region', region);
-    if (rank)   qs.set('rank', rank);
+    if (rank)     qs.set('rank', rank);
 
     try {
       const res = await fetch(`/global?${qs}`, { signal: controller.signal });
-      data = res.ok ? await res.json() : [];
-      // já vem ordenado, mas garante de novo
-      data.sort((a, b) => new Date(a.date) - new Date(b.date));
+      if (res.ok) {
+        const responseData = await res.json();
+        datajson = responseData.data || []; // Extrai os dados da tabela
+        datagraph = responseData.graph || []; // Extrai os dados do gráfico
+        console.log('Dados da tabela:', datajson);
+        console.log('Dados do gráfico:', datagraph);
+        
+        datajson.sort((a, b) => new Date(a.date) - new Date(b.date));
+      } else {
+        datajson = [];
+        datagraph = [];
+      }
     } catch (e) {
       if (e.name !== 'AbortError') console.error(e);
-      data = [];
+      datajson = [];
+      datagraph = [];
     } finally {
       loading = false;
     }
@@ -72,8 +84,16 @@
 {#if loading}
   <p>Carregando…</p>
 {:else}
+  <!-- Seção do gráfico -->
+  <div class="chart-container">
+    <h2>Top Músicas por Streams</h2>
+    <!-- Aqui você incluiria seu componente de treemap, passando datagraph como prop -->
+    <Chart data={datagraph} />
+  </div>
+
+  <!-- Seção da tabela (mantida como estava) -->
   <div class="grid">
-    {#each data as { date, rank, title, artist, region, trackId }}
+    {#each datajson as { date, rank, title, artist, region, trackId }}
       <div class="card" on:click={() => play(trackId)}>
         <small>{formatDate(date)} – #{rank}</small><br/>
         <strong>{title}</strong><br/>
@@ -124,5 +144,11 @@
   }
   .card:hover {
     background: #f0f0f0;
+  }
+  .chart-container {
+    margin-bottom: 2rem;
+    padding: 1rem;
+    border: 1px solid #eee;
+    border-radius: 8px;
   }
 </style>
