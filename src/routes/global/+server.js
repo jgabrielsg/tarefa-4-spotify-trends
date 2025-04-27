@@ -17,7 +17,7 @@ export async function GET() {
         }
       })
       .on('end', () => {
-        if (rows.length < 5) {
+        if (rows.length < 100) {
           resolve(new Response(JSON.stringify(rows), { status: 200 }));
         }
       })

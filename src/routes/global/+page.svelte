@@ -29,7 +29,7 @@
   <title>Ler CSV diretamente</title>
 </svelte:head>
 
-<h1>As 5 Primeiras Linhas do CSV</h1>
+<h1>As 100 Primeiras Linhas do CSV</h1>
 
 {#if loading}
   <p>Carregando...</p>
