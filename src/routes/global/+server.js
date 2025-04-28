@@ -49,8 +49,8 @@ export async function GET({ url }) {
     const artist = p.get('artist');
     const region = p.get('region');
     const rank   = p.get('rank');
-    const limit  = parseInt(p.get('limit') || '100', 10);
-    const limitGraph  = 10;
+    const limit  = parseInt(p.get('limit') || '50', 10);
+    const limitGraph  = limit;
 
     const where = [];
 

@@ -8,6 +8,7 @@
   let artist = '';
   let region = '';
   let rank = '';
+  let limit = 10;
   let datajson = [];
   let datagraph = []; 
   let loading = false;
@@ -19,11 +20,14 @@
   }
 
   async function fetchData() {
+    if (!limit || limit < 1) limit = 1;
+    if (limit > 50) limit = 50;
+
     controller?.abort();
     controller = new AbortController();
     loading = true;
 
-    const qs = new URLSearchParams({ limit: '10' });
+    const qs = new URLSearchParams({ limit: limit.toString() });
     if (start)    qs.set('start', start);
     if (end)      qs.set('end', end);
     if (title)    qs.set('title', title);
@@ -32,25 +36,25 @@
     if (rank)     qs.set('rank', rank);
 
     try {
-      const res = await fetch(`/global?${qs}`, { signal: controller.signal });
-      if (res.ok) {
-        const responseData = await res.json();
-        datajson = responseData.data || []; // Extrai os dados da tabela
-        datagraph = responseData.graph || []; // Extrai os dados do gráfico
-        console.log('Dados da tabela:', datajson);
-        console.log('Dados do gráfico:', datagraph);
-        
-        datajson.sort((a, b) => new Date(a.date) - new Date(b.date));
-      } else {
+        const res = await fetch(`/global?${qs}`, { signal: controller.signal });
+        if (res.ok) {
+            const responseData = await res.json();
+            datajson = responseData.data || [];
+            datagraph = responseData.graph || [];
+            console.log('Dados da tabela:', datajson);
+            console.log('Dados do gráfico:', datagraph);
+
+            datajson.sort((a, b) => new Date(a.date) - new Date(b.date));
+        } else {
+            datajson = [];
+            datagraph = [];
+        }
+    } catch (e) {
+        if (e.name !== 'AbortError') console.error(e);
         datajson = [];
         datagraph = [];
-      }
-    } catch (e) {
-      if (e.name !== 'AbortError') console.error(e);
-      datajson = [];
-      datagraph = [];
     } finally {
-      loading = false;
+        loading = false;
     }
   }
 
@@ -79,6 +83,7 @@
   <input placeholder="Artista" bind:value={artist} on:input={onArtist} />
   <input placeholder="Região" bind:value={region} on:input={onRegion} />
   <input placeholder="Rank (intervalo '1-50')" bind:value={rank} on:input={onRank} />
+  <input placeholder="Qtd. Músicas" type="number" min="1" bind:value={limit} on:input={fetchData} />
 </div>
 
 {#if loading}
@@ -87,7 +92,7 @@
   <!-- Seção do gráfico -->
   <div class="chart-container">
     <h2>Top Músicas por Streams</h2>
-    <Chart data={datagraph} on:playtrack={(e) => currentTrack = e.detail}/>
+    <Chart data={datagraph} on:playtrack={(e) => currentTrack = e.detail} {limit} />
   </div>
 
   <!-- Seção da tabela  -->
