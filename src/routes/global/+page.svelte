@@ -121,34 +121,32 @@
     display: flex;
     gap: 10px;
     margin-bottom: 1rem;
+    align-items: center;
+    flex-wrap: wrap;
   }
+
   .filters input {
     flex: 1;
-    padding: .5rem;
-    border: 1px solid #ccc;
-    border-radius: 4px;
+    padding: 0.75rem 1rem;
+    background-color: #121212;
+    color: white;
+    border: none;
+    border-radius: 500px; /* igualzinho ao Spotify */
+    font-size: 14px;
+    outline: none;
+    min-width: 200px;
   }
-  .grid {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
+
+  .filters input::placeholder {
+    color: #b3b3b3; /* cor do placeholder do Spotify */
   }
-  .card {
-    width: 150px;
-    padding: 10px;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    text-align: center;
-    cursor: pointer;
-    transition: .2s;
+
+  .filters input:focus {
+    background-color: #2a2a2a;
   }
-  .card:hover {
-    background: #f0f0f0;
-  }
-  .chart-container {
-    margin-bottom: 2rem;
-    padding: 1rem;
-    border: 1px solid #eee;
-    border-radius: 8px;
+
+  /* Opcional: adicionar uma pequena sombra igual ao Spotify */
+  .filters input {
+    box-shadow: inset 0 0 0 1px #535353;
   }
 </style>
