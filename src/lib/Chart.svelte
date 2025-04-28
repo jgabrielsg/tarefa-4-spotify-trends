@@ -8,6 +8,9 @@
   let nodes = [];
   let images = {};
 
+  let hoveredId = null;
+  let selectedId = null;
+
   const width = 1000;
   const height = 600;
 
@@ -68,13 +71,20 @@
     const trackUrl = `https://open.spotify.com/embed/track/${trackId}`;
     dispatch('playtrack', trackUrl);
   }
+
+  function select(trackId) {
+    selectedId = trackId;
+    play(trackId);
+  }
 </script>
 
 <svg width={width} height={height} xmlns="http://www.w3.org/2000/svg">
   {#each nodes as node}
   <g 
     transform={`translate(${node.x0},${node.y0})`} 
-    on:click={() => play(node.data.trackId)}
+    on:mouseover={() => hoveredId = node.data.trackId}
+    on:mouseout={() => hoveredId = null}
+    on:click={() => select(node.data.trackId)}
     style="cursor: pointer;"
   >
       <!-- Fundo com cor mais escura -->
@@ -82,7 +92,9 @@
         width={node.x1 - node.x0}
         height={node.y1 - node.y0}
         fill="#222"
-        stroke="#555"
+        stroke={(hoveredId === node.data.trackId || selectedId === node.data.trackId) ? "#1DB954" : "#555"}
+        stroke-width={(hoveredId === node.data.trackId || selectedId === node.data.trackId) ? 3 : 1}
+        style="transition: all 0.2s ease;"
       />
       
       <!-- Imagem - note que usamos href em vez de xlink:href -->
@@ -103,7 +115,8 @@
       <rect
         width={node.x1 - node.x0}
         height={node.y1 - node.y0}
-        fill="rgba(0,0,0,0.7)"
+        fill={(hoveredId === node.data.trackId || selectedId === node.data.trackId) ? "rgba(0,0,0,0.2)" : "rgba(0,0,0,0.7)"}
+        style="transition: all 0.2s ease;"
       />
       
       <!-- Texto com sombra e posicionamento elegante -->
@@ -149,6 +162,7 @@
   svg {
     border-radius: 8px;
     box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-    background: #121212; /* Fundo escuro estilo Spotify */
+    background: #121212; /* Fundo escuro tipo Spotify */
+    transition: background 0.3s ease;
   }
 </style>

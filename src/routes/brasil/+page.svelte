@@ -116,16 +116,36 @@
 {/if}
 
 <style>
-  .filters {
+.filters {
     display: flex;
     gap: 10px;
     margin-bottom: 1rem;
+    align-items: center;
+    flex-wrap: wrap;
   }
+
   .filters input {
     flex: 1;
-    padding: .5rem;
-    border: 1px solid #ccc;
-    border-radius: 4px;
+    padding: 0.75rem 1rem;
+    background-color: #121212;
+    color: white;
+    border: none;
+    border-radius: 500px; 
+    font-size: 14px;
+    outline: none;
+    min-width: 200px;
+  }
+
+  .filters input::placeholder {
+    color: #b3b3b3; 
+  }
+
+  .filters input:focus {
+    background-color: #2a2a2a;
+  }
+
+  .filters input {
+    box-shadow: inset 0 0 0 1px #535353;
   }
   .grid {
     display: flex;
