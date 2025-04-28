@@ -1,6 +1,7 @@
 <script>
   import { onMount } from 'svelte';
   import * as d3 from 'd3';
+  import { createEventDispatcher } from 'svelte';
 
   export let data = [];
 
@@ -61,11 +62,21 @@
     });
   }
 
+  const dispatch = createEventDispatcher();
+
+  function play(trackId) {
+    const trackUrl = `https://open.spotify.com/embed/track/${trackId}`;
+    dispatch('playtrack', trackUrl);
+  }
 </script>
 
 <svg width={width} height={height} xmlns="http://www.w3.org/2000/svg">
   {#each nodes as node}
-    <g transform={`translate(${node.x0},${node.y0})`}>
+  <g 
+    transform={`translate(${node.x0},${node.y0})`} 
+    on:click={() => play(node.data.trackId)}
+    style="cursor: pointer;"
+  >
       <!-- Fundo com cor mais escura -->
       <rect
         width={node.x1 - node.x0}

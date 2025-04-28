@@ -87,7 +87,7 @@
   <!-- Seção do gráfico -->
   <div class="chart-container">
     <h2>Top Músicas por Streams</h2>
-    <Chart data={datagraph} />
+    <Chart data={datagraph} on:playtrack={(e) => currentTrack = e.detail}/>
   </div>
 
   <!-- Seção da tabela  -->
