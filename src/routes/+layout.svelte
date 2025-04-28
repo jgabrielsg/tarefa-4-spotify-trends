@@ -4,8 +4,7 @@
 
     let pages = [
         { url: "/", title: "Home" },
-        { url: "/global", title: "Global" },
-        { url: "/brasil", title: "Brasil" },
+        { url: "/chart", title: "Chart" },
         { url: "https://github.com/FGV-VIS-2025/tarefa-4-spotify-trends", title: "Github" }
     ];
 

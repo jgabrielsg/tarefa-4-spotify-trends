@@ -21,7 +21,7 @@
     if (images[trackId]) return images[trackId];
 
     try {
-      const response = await fetch(`/global?thumbnail=true&trackId=${trackId}`);
+      const response = await fetch(`/chart?thumbnail=true&trackId=${trackId}`);
       if (response.ok) {
         const json = await response.json();
         images[trackId] = json.thumbnail;
