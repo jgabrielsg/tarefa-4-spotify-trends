@@ -70,6 +70,8 @@ export async function GET({ url }) {
     }
     if (region) {
       where.push(`LOWER(region) LIKE '${esc(region.toLowerCase())}%'`);
+    } else {
+      where.push(`LOWER(region) = 'global'`);
     }
     if (rank) {
       if (rank.includes('-')) {

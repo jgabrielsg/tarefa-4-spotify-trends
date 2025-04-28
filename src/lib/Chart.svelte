@@ -7,7 +7,7 @@
   let nodes = [];
   let images = {};
 
-  const width = 800;
+  const width = 1000;
   const height = 600;
 
   async function fetchThumbnail(trackId) {
