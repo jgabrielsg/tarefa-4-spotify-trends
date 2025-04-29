@@ -10,7 +10,7 @@
   <div class="welcome">
       <h1>Spotify Trends</h1>
       <p>Descubra as músicas mais ouvidas no mundo e no Brasil!</p>
-      <a href="/chart" class="start-button">Explorar Rankings</a>
+      <a href="./chart" class="start-button">Explorar Rankings</a>
   </div>
 </section>
 

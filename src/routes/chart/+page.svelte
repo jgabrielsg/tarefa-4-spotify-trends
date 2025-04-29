@@ -1,6 +1,8 @@
 <script>
   import { onMount } from 'svelte';
   import Chart from '../../lib/Chart.svelte';
+  import datagraph from '$lib/dados_grafico.json';
+  import datajson from '$lib/dados_tabela.json';
 
   let start = '';
   let end = '';
@@ -9,8 +11,8 @@
   let region = '';
   let rank = '';
   let limit = 10;
-  let datajson = [];
-  let datagraph = []; 
+  // let datajson = [];
+  // let datagraph = []; 
   let loading = false;
   let currentTrack = '';
   let controller;
@@ -21,22 +23,6 @@
 
   async function fetchData() {
 
-    // Carrega os dados JSON dos arquivos locais
-    fetch('./dados_tabela.json')
-      .then(response => response.json())
-      .then(data => {
-        datajson = data; 
-        datajson.sort((a, b) => new Date(a.date) - new Date(b.date));
-      });
-
-    fetch('./dados_grafico.json')
-      .then(response => response.json())
-      .then(data => {
-        datagraph = data;
-      })
-      .finally(() => {
-        loading = false;
-      });
     // if (!limit || limit < 1) limit = 1;
     // if (limit > 50) limit = 50;
 
