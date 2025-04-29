@@ -1,6 +1,5 @@
-// netlify/functions/chart.js
 import * as duckdb from '@duckdb/duckdb-wasm';
-import Worker from 'web-worker';
+import { Worker } from 'worker_threads';  // Use Worker do Node.js em vez do Worker do navegador
 import fs from 'fs/promises';
 import fetch from 'node-fetch';
 
@@ -14,14 +13,17 @@ export async function handler(event) {
     const jsdelivr = duckdb.getJsDelivrBundles();
     const bundle  = await duckdb.selectBundle(jsdelivr);
 
-    // criar Worker WASM
-    // gera um Blob p/ o worker
-    const blob = new Blob(
-      [`importScripts("${bundle.mainWorker}")`],
-      { type: 'text/javascript' }
-    );
-    const workerUrl = URL.createObjectURL(blob);
-    const worker    = new Worker(workerUrl);
+    // Criar Worker usando a versão compatível com Node.js
+    const workerScript = `
+      importScripts("${bundle.mainWorker}");
+    `;
+    
+    // Salvar o worker como arquivo temporário, porque URL.createObjectURL não funciona no servidor
+    const tempWorkerFilePath = '/tmp/worker.js';
+    await fs.writeFile(tempWorkerFilePath, workerScript);
+
+    // Criar worker com o arquivo temporário
+    const worker = new Worker(tempWorkerFilePath);
 
     // logger e instância DB
     const logger = new duckdb.ConsoleLogger();
@@ -29,9 +31,8 @@ export async function handler(event) {
     await db.instantiate(bundle.mainModule, bundle.pthreadWorker);
 
     // “montar” o arquivo charts.duck.db no FS do WASM
-    const path = require('path');
     const buf = await fs.readFile(
-      path.resolve(__dirname, 'charts.duck.db')
+      new URL('./charts.duck.db', import.meta.url)
     );
     await db.registerFileBuffer('charts.duck.db', buf);
 
@@ -41,7 +42,7 @@ export async function handler(event) {
   const db = _db;
   const p  = event.queryStringParameters || {};
 
-  // rota de thumbnail
+  // Rota de thumbnail
   if (p.thumbnail === 'true') {
     if (!p.trackId) {
       return { statusCode: 400, headers: CORS, body: 'trackId é obrigatório' };
@@ -61,7 +62,7 @@ export async function handler(event) {
     }
   }
 
-  // 3) parâmetros de filtro
+  // 3) Parâmetros de filtro
   const start  = p.start;
   const end    = p.end;
   const title  = p.title;
@@ -72,7 +73,7 @@ export async function handler(event) {
   if (limit < 1) limit = 1;
   if (limit > 50) limit = 50;
 
-  // montar WHERE 
+  // Montar WHERE 
   const esc = s => s.replace(/'/g, "''");
   const where = [];
   if (start && end) where.push(`date BETWEEN '${esc(start)}' AND '${esc(end)}'`);
@@ -109,8 +110,7 @@ export async function handler(event) {
      LIMIT ${limit};
   `.trim();
 
-  // 6) rodar as queries
-  // AsyncDuckDBConnection.query() retorna um Arrow Table
+  // 6) Rodar as queries
   const conn       = await db.connect();
   const tableData  = await conn.query(sqlData);
   const rowsData   = tableData.toArray();
@@ -118,7 +118,7 @@ export async function handler(event) {
   const rowsGraph  = tableGraph.toArray();
   await conn.close();
 
-  // 7) resposta final
+  // 7) Resposta final
   return {
     statusCode: 200,
     headers: CORS_JSON,
@@ -126,7 +126,7 @@ export async function handler(event) {
   };
 }
 
-// cabeçalhos CORS
+// Cabeçalhos CORS
 const CORS = { 'Access-Control-Allow-Origin': '*' };
 const CORS_JSON = {
   ...CORS,
