@@ -22,14 +22,14 @@
   async function fetchData() {
 
     // Carrega os dados JSON dos arquivos locais
-    fetch('/dados_tabela.json')
+    fetch('./dados_tabela.json')
       .then(response => response.json())
       .then(data => {
         datajson = data; 
         datajson.sort((a, b) => new Date(a.date) - new Date(b.date));
       });
 
-    fetch('/dados_grafico.json')
+    fetch('./dados_grafico.json')
       .then(response => response.json())
       .then(data => {
         datagraph = data;
