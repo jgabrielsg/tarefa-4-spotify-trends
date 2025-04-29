@@ -71,17 +71,19 @@
       .paddingOuter(4)
       (root);
 
-    Promise.all(
-      root.leaves().map(async node => {
-        const thumbnail = await fetchThumbnail(node.data.trackId);
-        if (thumbnail) {
-          node.data.thumbnail = thumbnail;
-        }
-        return node;
-      })
-    ).then(finalNodes => {
-      nodes = finalNodes.slice(0, limit);
-    });
+    // Promise.all(
+    //   root.leaves().map(async node => {
+    //     const thumbnail = await fetchThumbnail(node.data.trackId);
+    //     if (thumbnail) {
+    //       node.data.thumbnail = thumbnail;
+    //     }
+    //     return node;
+    //   })
+    // ).then(finalNodes => {
+    //   nodes = finalNodes.slice(0, limit);
+    // });
+
+    nodes = root.leaves().slice(0, limit);
   }
 </script>
 
@@ -119,14 +121,12 @@
         style="transition: all 0.2s ease;"
       />
 
-      {#if node.data.thumbnail}
-        <image
-          href={node.data.thumbnail}
-          width={node.x1 - node.x0}
-          height={node.y1 - node.y0}
-          preserveAspectRatio="xMidYMid slice"
-        />
-      {/if}
+      <image
+        href={node.data.imageUrl}
+        width={node.x1 - node.x0}
+        height={node.y1 - node.y0}
+        preserveAspectRatio="xMidYMid slice"
+      />
 
       <rect
         width={node.x1 - node.x0}
