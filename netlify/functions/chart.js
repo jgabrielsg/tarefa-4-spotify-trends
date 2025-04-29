@@ -1,6 +1,6 @@
 // netlify/functions/chart.js
 import * as duckdb from '@duckdb/duckdb-wasm';
-import { Worker } from 'worker_threads';
+import { Worker } from 'web-worker';
 import fs from 'fs/promises';
 import fetch from 'node-fetch';
 
