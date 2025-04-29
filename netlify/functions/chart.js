@@ -29,9 +29,7 @@ export async function handler(event) {
     await db.instantiate(bundle.mainModule, bundle.pthreadWorker);
 
     // “montar” o arquivo charts.duck.db no FS do WASM
-    const buf = await fs.readFile(
-      new URL('./charts.duck.db', import.meta.url)
-    );
+    const buf = await fs.readFile('/public/charts.duck.db');
     await db.registerFileBuffer('charts.duck.db', buf);
 
     _db = db;  // salvar instância
