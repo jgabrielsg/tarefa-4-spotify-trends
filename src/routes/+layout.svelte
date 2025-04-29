@@ -3,8 +3,8 @@
     import { base } from "$app/paths";
 
     let pages = [
-        { url: "./", title: "Home" },
-        { url: "./chart", title: "Chart" },
+        { url: "/", title: "Home" },
+        { url: "/chart", title: "Chart" },
         { url: "https://github.com/FGV-VIS-2025/tarefa-4-spotify-trends", title: "Github" }
     ];
 
