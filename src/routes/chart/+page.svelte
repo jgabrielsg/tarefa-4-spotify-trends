@@ -20,50 +20,67 @@
   }
 
   async function fetchData() {
-    if (!limit || limit < 1) limit = 1;
-    if (limit > 50) limit = 50;
 
-    controller?.abort();
-    controller = new AbortController();
-    loading = true;
+    // Carrega os dados JSON dos arquivos locais
+    fetch('/dados_tabela.json')
+      .then(response => response.json())
+      .then(data => {
+        datajson = data; 
+        datajson.sort((a, b) => new Date(a.date) - new Date(b.date));
+      });
 
-    const qs = new URLSearchParams({ limit: limit.toString() });
-    if (start)    qs.set('start', start);
-    if (end)      qs.set('end', end);
-    if (title)    qs.set('title', title);
-    if (artist)   qs.set('artist', artist);
-    if (region)   qs.set('region', region);
-    if (rank)     qs.set('rank', rank);
-
-    try {
-        const res = await fetch(`./chart?${qs}`, { signal: controller.signal });
-        if (res.ok) {
-            const responseData = await res.json();
-            datajson = responseData.data || [];
-            datagraph = responseData.graph || [];
-            console.log('Dados da tabela:', datajson);
-            console.log('Dados do gráfico:', datagraph);
-
-            datajson.sort((a, b) => new Date(a.date) - new Date(b.date));
-        } else {
-            datajson = [];
-            datagraph = [];
-        }
-    } catch (e) {
-        if (e.name !== 'AbortError') console.error(e);
-        datajson = [];
-        datagraph = [];
-    } finally {
+    fetch('/dados_grafico.json')
+      .then(response => response.json())
+      .then(data => {
+        datagraph = data;
+      })
+      .finally(() => {
         loading = false;
-    }
+      });
+    // if (!limit || limit < 1) limit = 1;
+    // if (limit > 50) limit = 50;
+
+    // controller?.abort();
+    // controller = new AbortController();
+    // loading = true;
+
+    // const qs = new URLSearchParams({ limit: limit.toString() });
+    // if (start)    qs.set('start', start);
+    // if (end)      qs.set('end', end);
+    // if (title)    qs.set('title', title);
+    // if (artist)   qs.set('artist', artist);
+    // if (region)   qs.set('region', region);
+    // if (rank)     qs.set('rank', rank);
+
+    // try {
+    //     const res = await fetch(`/chart?${qs}`, { signal: controller.signal });
+    //     if (res.ok) {
+    //         const responseData = await res.json();
+    //         datajson = responseData.data || [];
+    //         datagraph = responseData.graph || [];
+    //         console.log('Dados da tabela:', datajson);
+    //         console.log('Dados do gráfico:', datagraph);
+
+    //         datajson.sort((a, b) => new Date(a.date) - new Date(b.date));
+    //     } else {
+    //         datajson = [];
+    //         datagraph = [];
+    //     }
+    // } catch (e) {
+    //     if (e.name !== 'AbortError') console.error(e);
+    //     datajson = [];
+    //     datagraph = [];
+    // } finally {
+    //     loading = false;
+    // }
   }
 
-  function onStart(e)  { start  = e.target.value; fetchData(); }
-  function onEnd(e)    { end    = e.target.value; fetchData(); }
-  function onTitle(e)  { title  = e.target.value; fetchData(); }
-  function onArtist(e) { artist = e.target.value; fetchData(); }
-  function onRegion(e) { region = e.target.value; fetchData(); }
-  function onRank(e) { rank = e.target.value; fetchData(); }
+  // function onStart(e)  { start  = e.target.value; fetchData(); }
+  // function onEnd(e)    { end    = e.target.value; fetchData(); }
+  // function onTitle(e)  { title  = e.target.value; fetchData(); }
+  // function onArtist(e) { artist = e.target.value; fetchData(); }
+  // function onRegion(e) { region = e.target.value; fetchData(); }
+  // function onRank(e) { rank = e.target.value; fetchData(); }
 
   function play(id) {
     currentTrack = `https://open.spotify.com/embed/track/${id}`;
@@ -76,13 +93,23 @@
   <title>Charts Top</title>
 </svelte:head>
 
-<div class="filters">
+<!-- <div class="filters">
   <input type="date" bind:value={start}  on:input={onStart}  placeholder="Data início" />
   <input type="date" bind:value={end}    on:input={onEnd}    placeholder="Data fim" />
   <input placeholder="Música"  bind:value={title}  on:input={onTitle}  />
   <input placeholder="Artista" bind:value={artist} on:input={onArtist} />
   <input placeholder="Região" bind:value={region} on:input={onRegion} />
   <input placeholder="Rank (intervalo '1-50')" bind:value={rank} on:input={onRank} />
+  <input placeholder="Qtd. Músicas" type="number" min="1" bind:value={limit} on:input={fetchData} />
+</div> -->
+
+<div class="filters">
+  <input type="date" bind:value={start}  placeholder="Data início" />
+  <input type="date" bind:value={end}    placeholder="Data fim" />
+  <input placeholder="Música"  bind:value={title}  />
+  <input placeholder="Artista" bind:value={artist} />
+  <input placeholder="Região" bind:value={region} />
+  <input placeholder="Rank (intervalo '1-50')" bind:value={rank} />
   <input placeholder="Qtd. Músicas" type="number" min="1" bind:value={limit} on:input={fetchData} />
 </div>
 
