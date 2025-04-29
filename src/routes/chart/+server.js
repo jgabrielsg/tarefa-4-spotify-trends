@@ -1,4 +1,5 @@
-import { Database } from 'duckdb';
+import pkg from 'duckdb';
+const { Database } = pkg;
 
 const db = new Database('charts.duck.db');
 
