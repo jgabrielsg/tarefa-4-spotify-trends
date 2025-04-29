@@ -1,8 +1,6 @@
 <script>
   import { onMount } from 'svelte';
   import Chart from '../../lib/Chart.svelte';
-  import datagraph from '$lib/dados_grafico.json';
-  import datajson from '$lib/dados_tabela.json';
 
   let start = '';
   let end = '';
@@ -11,8 +9,8 @@
   let region = '';
   let rank = '';
   let limit = 10;
-  // let datajson = [];
-  // let datagraph = []; 
+  let datajson = [];
+  let datagraph = []; 
   let loading = false;
   let currentTrack = '';
   let controller;
@@ -22,12 +20,20 @@
   }
 
   async function fetchData() {
-     if (!limit || limit < 1) limit = 1;
-     if (limit > 50) limit = 50;
+    if (!limit || limit < 1) limit = 1;
+    if (limit > 50) limit = 50;
 
-     controller?.abort();
-     controller = new AbortController();
-     loading = true;
+    controller?.abort();
+    controller = new AbortController();
+    loading = true;
+
+    const qs = new URLSearchParams({ limit: limit.toString() });
+    if (start)    qs.set('start', start);
+    if (end)      qs.set('end', end);
+    if (title)    qs.set('title', title);
+    if (artist)   qs.set('artist', artist);
+    if (region)   qs.set('region', region);
+    if (rank)     qs.set('rank', rank);
 
     try {
         const res = await fetch(`/.netlify/functions/chart?${qs}`, { signal: controller.signal });
@@ -38,18 +44,18 @@
             console.log('Dados da tabela:', datajson);
             console.log('Dados do gráfico:', datagraph);
 
-             datajson.sort((a, b) => new Date(a.date) - new Date(b.date));
+            datajson.sort((a, b) => new Date(a.date) - new Date(b.date));
         } else {
-             datajson = [];
-             datagraph = [];
-         }
-     } catch (e) {
-         if (e.name !== 'AbortError') console.error(e);
-         datajson = [];
-         datagraph = [];
-     } finally {
-         loading = false;
-     }
+            datajson = [];
+            datagraph = [];
+        }
+    } catch (e) {
+        if (e.name !== 'AbortError') console.error(e);
+        datajson = [];
+        datagraph = [];
+    } finally {
+        loading = false;
+    }
   }
 
   function onStart(e)  { start  = e.target.value; fetchData(); }
@@ -77,16 +83,6 @@
   <input placeholder="Artista" bind:value={artist} on:input={onArtist} />
   <input placeholder="Região" bind:value={region} on:input={onRegion} />
   <input placeholder="Rank (intervalo '1-50')" bind:value={rank} on:input={onRank} />
-  <input placeholder="Qtd. Músicas" type="number" min="1" bind:value={limit} on:input={fetchData} />
-</div> 
-
-<div class="filters">
-  <input type="date" bind:value={start}  placeholder="Data início" />
-  <input type="date" bind:value={end}    placeholder="Data fim" />
-  <input placeholder="Música"  bind:value={title}  />
-  <input placeholder="Artista" bind:value={artist} />
-  <input placeholder="Região" bind:value={region} />
-  <input placeholder="Rank (intervalo '1-50')" bind:value={rank} />
   <input placeholder="Qtd. Músicas" type="number" min="1" bind:value={limit} on:input={fetchData} />
 </div>
 
