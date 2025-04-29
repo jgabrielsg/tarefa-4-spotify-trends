@@ -1,5 +1,5 @@
 import * as duckdb from '@duckdb/duckdb-wasm';
-import { Worker } from 'worker_threads';  // Use Worker do Node.js em vez do Worker do navegador
+import { Worker } from 'worker_threads';  // Importando o Worker correto para Node.js
 import fs from 'fs/promises';
 import fetch from 'node-fetch';
 
