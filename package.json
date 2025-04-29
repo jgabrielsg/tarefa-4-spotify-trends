@@ -18,12 +18,15 @@
 	},
 	"type": "module",
 	"dependencies": {
+		"@duckdb/duckdb-wasm": "^1.29.1-dev132.0",
 		"@floating-ui/dom": "^1.6.13",
 		"chart.js": "^4.4.9",
 		"csv-parser": "^3.2.0",
 		"d3": "^7.9.0",
 		"dotenv": "^16.5.0",
 		"duckdb": "^1.2.1",
-		"papaparse": "^5.5.2"
+		"node-fetch": "^3.3.2",
+		"papaparse": "^5.5.2",
+		"web-worker": "^1.4.1"
 	}
 }
