@@ -9,8 +9,7 @@
 		"preview": "vite preview"
 	},
 	"devDependencies": {
-		"@sveltejs/adapter-auto": "^2.0.0",
-		"@sveltejs/adapter-static": "^2.0.3",
+		"@sveltejs/adapter-netlify": "^2.0.0",
 		"@sveltejs/kit": "^1.5.0",
 		"elocuent": "^0.0.4",
 		"svelte": "^4.2.19",
@@ -18,12 +17,17 @@
 	},
 	"type": "module",
 	"dependencies": {
+		"@duckdb/duckdb-wasm": "^1.29.1-dev132.0",
 		"@floating-ui/dom": "^1.6.13",
 		"chart.js": "^4.4.9",
 		"csv-parser": "^3.2.0",
 		"d3": "^7.9.0",
 		"dotenv": "^16.5.0",
 		"duckdb": "^1.2.1",
-		"papaparse": "^5.5.2"
+		"mdsvex": "^0.12.5",
+		"node-fetch": "^3.3.2",
+		"papaparse": "^5.5.2",
+		"svelte-preprocess": "^6.0.3",
+		"web-worker": "^1.4.1"
 	}
 }

@@ -30,13 +30,14 @@
     // controller = new AbortController();
     // loading = true;
 
-    // const qs = new URLSearchParams({ limit: limit.toString() });
-    // if (start)    qs.set('start', start);
-    // if (end)      qs.set('end', end);
-    // if (title)    qs.set('title', title);
-    // if (artist)   qs.set('artist', artist);
-    // if (region)   qs.set('region', region);
-    // if (rank)     qs.set('rank', rank);
+    try {
+        const res = await fetch(`/.netlify/functions/chart?${qs}`, { signal: controller.signal });
+        if (res.ok) {
+            const responseData = await res.json();
+            datajson = responseData.data || [];
+            datagraph = responseData.graph || [];
+            console.log('Dados da tabela:', datajson);
+            console.log('Dados do gráfico:', datagraph);
 
     // try {
     //     const res = await fetch(`/chart?${qs}`, { signal: controller.signal });
