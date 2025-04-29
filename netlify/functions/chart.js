@@ -10,7 +10,6 @@ export async function handler(event) {
     console.log('Iniciando handler...');
     
     if (!_db) {
-      // Instanciar DuckDB apenas uma vez
       console.log('Instanciando o DuckDB...');
       const jsdelivr = duckdb.getJsDelivrBundles();
       const bundle = await duckdb.selectBundle(jsdelivr);
@@ -21,6 +20,10 @@ export async function handler(event) {
       // Carregar o banco de dados
       console.log('Lendo o arquivo de banco de dados...');
       const buf = await fs.readFile(new URL('./charts.duck.db', import.meta.url));
+      if (!buf) {
+        console.log('Erro ao ler o arquivo de banco de dados.');
+        throw new Error('Arquivo de banco de dados não carregado corretamente');
+      }
       console.log('Arquivo de banco de dados carregado com sucesso.');
 
       await _db.registerFileBuffer('charts.duck.db', buf);
@@ -64,13 +67,19 @@ export async function handler(event) {
       LIMIT ${limit};
     `.trim();
 
+    console.log('Consultas SQL geradas:', sqlData, sqlGraph);
+
     // Rodar as consultas no banco de dados
     const conn = await db.connect();
     console.log('Conexão com o banco de dados estabelecida.');
     const tableData = await conn.query(sqlData);
     const rowsData = tableData.toArray();
+    console.log('Tabela de dados carregada:', rowsData);
+
     const tableGraph = await conn.query(sqlGraph);
     const rowsGraph = tableGraph.toArray();
+    console.log('Tabela de gráfico carregada:', rowsGraph);
+
     await conn.close();
     console.log('Consultas executadas e conexão fechada.');
 
