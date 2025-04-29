@@ -6,66 +6,86 @@ import fetch from 'node-fetch';
 let _db;
 
 export async function handler(event) {
-  if (!_db) {
-    // Instanciar DuckDB apenas uma vez
-    const jsdelivr = duckdb.getJsDelivrBundles();
-    const bundle = await duckdb.selectBundle(jsdelivr);
+  try {
+    console.log('Iniciando handler...');
+    
+    if (!_db) {
+      // Instanciar DuckDB apenas uma vez
+      console.log('Instanciando o DuckDB...');
+      const jsdelivr = duckdb.getJsDelivrBundles();
+      const bundle = await duckdb.selectBundle(jsdelivr);
+      
+      const logger = new duckdb.ConsoleLogger();
+      _db = new duckdb.AsyncDuckDB(logger);
 
-    const logger = new duckdb.ConsoleLogger();
-    _db = new duckdb.AsyncDuckDB(logger);
+      // Carregar o banco de dados
+      console.log('Lendo o arquivo de banco de dados...');
+      const buf = await fs.readFile(new URL('./charts.duck.db', import.meta.url));
+      console.log('Arquivo de banco de dados carregado com sucesso.');
 
-    // Carregar o banco de dados
-    const buf = await fs.readFile(new URL('./charts.duck.db', import.meta.url));
-    await _db.registerFileBuffer('charts.duck.db', buf);
+      await _db.registerFileBuffer('charts.duck.db', buf);
+      await _db.instantiate(bundle.mainModule, bundle.pthreadWorker);
+      console.log('Banco de dados instanciado.');
+    }
 
-    await _db.instantiate(bundle.mainModule, bundle.pthreadWorker);
+    const db = _db;
+    const p = event.queryStringParameters || {};
+    let limit = parseInt(p.limit, 10) || 50;
+
+    if (limit < 1) limit = 1;
+    if (limit > 50) limit = 50;
+
+    console.log(`Limit definido como: ${limit}`);
+
+    // Montar a cláusula WHERE
+    const where = [];
+    if (p.start) where.push(`date >= '${p.start}'`);
+    if (p.end) where.push(`date <= '${p.end}'`);
+    if (p.title) where.push(`LOWER(title) LIKE '${p.title.toLowerCase()}%'`);
+    if (p.artist) where.push(`LOWER(artist) LIKE '${p.artist.toLowerCase()}%'`);
+    if (p.region) where.push(`LOWER(region) LIKE '${p.region.toLowerCase()}%'`);
+
+    const whereClause = where.length ? ' WHERE ' + where.join(' AND ') : '';
+    console.log(`Cláusula WHERE gerada: ${whereClause}`);
+
+    // Consultas SQL
+    const sqlData = `
+      SELECT title, artist, date, rank, region, url AS trackId
+      FROM charts${whereClause}
+      ORDER BY date, rank
+      LIMIT ${limit};
+    `.trim();
+
+    const sqlGraph = `
+      SELECT title, artist, url AS trackId, SUM(streams) AS total_streams
+      FROM charts${whereClause}
+      GROUP BY title, artist, url
+      ORDER BY total_streams DESC
+      LIMIT ${limit};
+    `.trim();
+
+    // Rodar as consultas no banco de dados
+    const conn = await db.connect();
+    console.log('Conexão com o banco de dados estabelecida.');
+    const tableData = await conn.query(sqlData);
+    const rowsData = tableData.toArray();
+    const tableGraph = await conn.query(sqlGraph);
+    const rowsGraph = tableGraph.toArray();
+    await conn.close();
+    console.log('Consultas executadas e conexão fechada.');
+
+    // Retornar os resultados
+    return {
+      statusCode: 200,
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ data: rowsData, graph: rowsGraph })
+    };
+  } catch (error) {
+    console.error('Erro no handler:', error);
+    return {
+      statusCode: 500,
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ error: error.message })
+    };
   }
-
-  const db = _db;
-  const p = event.queryStringParameters || {};
-  let limit = parseInt(p.limit, 10) || 50;
-
-  if (limit < 1) limit = 1;
-  if (limit > 50) limit = 50;
-
-  // Montar a cláusula WHERE
-  const where = [];
-  if (p.start) where.push(`date >= '${p.start}'`);
-  if (p.end) where.push(`date <= '${p.end}'`);
-  if (p.title) where.push(`LOWER(title) LIKE '${p.title.toLowerCase()}%'`);
-  if (p.artist) where.push(`LOWER(artist) LIKE '${p.artist.toLowerCase()}%'`);
-  if (p.region) where.push(`LOWER(region) LIKE '${p.region.toLowerCase()}%'`);
-
-  const whereClause = where.length ? ' WHERE ' + where.join(' AND ') : '';
-
-  // Consultas SQL
-  const sqlData = `
-    SELECT title, artist, date, rank, region, url AS trackId
-    FROM charts${whereClause}
-    ORDER BY date, rank
-    LIMIT ${limit};
-  `.trim();
-
-  const sqlGraph = `
-    SELECT title, artist, url AS trackId, SUM(streams) AS total_streams
-    FROM charts${whereClause}
-    GROUP BY title, artist, url
-    ORDER BY total_streams DESC
-    LIMIT ${limit};
-  `.trim();
-
-  // Rodar as consultas no banco de dados
-  const conn = await db.connect();
-  const tableData = await conn.query(sqlData);
-  const rowsData = tableData.toArray();
-  const tableGraph = await conn.query(sqlGraph);
-  const rowsGraph = tableGraph.toArray();
-  await conn.close();
-
-  // Retornar os resultados
-  return {
-    statusCode: 200,
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ data: rowsData, graph: rowsGraph })
-  };
 }
