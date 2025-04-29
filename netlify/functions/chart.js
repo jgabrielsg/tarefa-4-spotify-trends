@@ -1,134 +1,71 @@
 import * as duckdb from '@duckdb/duckdb-wasm';
-import { Worker } from 'worker_threads';  // Importando o Worker correto para Node.js
 import fs from 'fs/promises';
 import fetch from 'node-fetch';
 
-// instância global (speed)
+// Instância global para o banco de dados
 let _db;
 
 export async function handler(event) {
-  // Instanciar DuckDB-WASM só na primeira chamada
   if (!_db) {
-    // escolher bundle CDN
+    // Instanciar DuckDB apenas uma vez
     const jsdelivr = duckdb.getJsDelivrBundles();
-    const bundle  = await duckdb.selectBundle(jsdelivr);
+    const bundle = await duckdb.selectBundle(jsdelivr);
 
-    // Criar Worker usando a versão compatível com Node.js
-    const workerScript = `
-      importScripts("${bundle.mainWorker}");
-    `;
-    
-    // Salvar o worker como arquivo temporário, porque URL.createObjectURL não funciona no servidor
-    const tempWorkerFilePath = '/tmp/worker.js';
-    await fs.writeFile(tempWorkerFilePath, workerScript);
-
-    // Criar worker com o arquivo temporário
-    const worker = new Worker(tempWorkerFilePath);
-
-    // logger e instância DB
     const logger = new duckdb.ConsoleLogger();
-    const db     = new duckdb.AsyncDuckDB(logger, worker);
-    await db.instantiate(bundle.mainModule, bundle.pthreadWorker);
+    _db = new duckdb.AsyncDuckDB(logger);
 
-    // “montar” o arquivo charts.duck.db no FS do WASM
-    const buf = await fs.readFile(
-      new URL('./charts.duck.db', import.meta.url)
-    );
-    await db.registerFileBuffer('charts.duck.db', buf);
+    // Carregar o banco de dados
+    const buf = await fs.readFile(new URL('./charts.duck.db', import.meta.url));
+    await _db.registerFileBuffer('charts.duck.db', buf);
 
-    _db = db;  // salvar instância
+    await _db.instantiate(bundle.mainModule, bundle.pthreadWorker);
   }
 
   const db = _db;
-  const p  = event.queryStringParameters || {};
+  const p = event.queryStringParameters || {};
+  let limit = parseInt(p.limit, 10) || 50;
 
-  // Rota de thumbnail
-  if (p.thumbnail === 'true') {
-    if (!p.trackId) {
-      return { statusCode: 400, headers: CORS, body: 'trackId é obrigatório' };
-    }
-    const res = await fetch(
-      `https://open.spotify.com/oembed?url=https://open.spotify.com/track/${p.trackId}`
-    );
-    if (res.ok) {
-      const { thumbnail_url: thumbnail } = await res.json();
-      return {
-        statusCode: 200,
-        headers: CORS_JSON,
-        body: JSON.stringify({ thumbnail })
-      };
-    } else {
-      return { statusCode: 404, headers: CORS, body: 'Thumbnail não encontrada' };
-    }
-  }
-
-  // 3) Parâmetros de filtro
-  const start  = p.start;
-  const end    = p.end;
-  const title  = p.title;
-  const artist = p.artist;
-  const region = p.region;
-  const rank   = p.rank;
-  let   limit  = parseInt(p.limit, 10) || 50;
   if (limit < 1) limit = 1;
   if (limit > 50) limit = 50;
 
-  // Montar WHERE 
-  const esc = s => s.replace(/'/g, "''");
+  // Montar a cláusula WHERE
   const where = [];
-  if (start && end) where.push(`date BETWEEN '${esc(start)}' AND '${esc(end)}'`);
-  else if (start)   where.push(`date >= '${esc(start)}'`);
-  else if (end)     where.push(`date <= '${esc(end)}'`);
-  if (title)  where.push(`LOWER(title) LIKE '${esc(title.toLowerCase())}%'`);
-  if (artist) where.push(`LOWER(artist) LIKE '${esc(artist.toLowerCase())}%'`);
-  if (region) where.push(`LOWER(region) LIKE '${esc(region.toLowerCase())}%'`);
-  else        where.push(`LOWER(region) = 'global'`);
-  if (rank) {
-    if (rank.includes('-')) {
-      const [min,max] = rank.split('-').map(n => parseInt(n,10));
-      if (!isNaN(min)&&!isNaN(max)) where.push(`rank BETWEEN ${min} AND ${max}`);
-    } else {
-      const r = parseInt(rank,10);
-      if (!isNaN(r)) where.push(`rank <= ${r}`);
-    }
-  }
-  const wc = where.length ? ' WHERE ' + where.join(' AND ') : '';
+  if (p.start) where.push(`date >= '${p.start}'`);
+  if (p.end) where.push(`date <= '${p.end}'`);
+  if (p.title) where.push(`LOWER(title) LIKE '${p.title.toLowerCase()}%'`);
+  if (p.artist) where.push(`LOWER(artist) LIKE '${p.artist.toLowerCase()}%'`);
+  if (p.region) where.push(`LOWER(region) LIKE '${p.region.toLowerCase()}%'`);
 
-  // SQL data & graph
+  const whereClause = where.length ? ' WHERE ' + where.join(' AND ') : '';
+
+  // Consultas SQL
   const sqlData = `
     SELECT title, artist, date, rank, region, url AS trackId
-      FROM charts${wc}
-     ORDER BY date, rank
-     LIMIT ${limit};
+    FROM charts${whereClause}
+    ORDER BY date, rank
+    LIMIT ${limit};
   `.trim();
 
   const sqlGraph = `
     SELECT title, artist, url AS trackId, SUM(streams) AS total_streams
-      FROM charts${wc}
-  GROUP BY title, artist, url
-     ORDER BY total_streams DESC
-     LIMIT ${limit};
+    FROM charts${whereClause}
+    GROUP BY title, artist, url
+    ORDER BY total_streams DESC
+    LIMIT ${limit};
   `.trim();
 
-  // 6) Rodar as queries
-  const conn       = await db.connect();
-  const tableData  = await conn.query(sqlData);
-  const rowsData   = tableData.toArray();
+  // Rodar as consultas no banco de dados
+  const conn = await db.connect();
+  const tableData = await conn.query(sqlData);
+  const rowsData = tableData.toArray();
   const tableGraph = await conn.query(sqlGraph);
-  const rowsGraph  = tableGraph.toArray();
+  const rowsGraph = tableGraph.toArray();
   await conn.close();
 
-  // 7) Resposta final
+  // Retornar os resultados
   return {
     statusCode: 200,
-    headers: CORS_JSON,
+    headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ data: rowsData, graph: rowsGraph })
   };
 }
-
-// Cabeçalhos CORS
-const CORS = { 'Access-Control-Allow-Origin': '*' };
-const CORS_JSON = {
-  ...CORS,
-  'Content-Type': 'application/json'
-};
