@@ -1,11 +1,12 @@
-// svelte.config.js
-import adapter from '@sveltejs/adapter-static';
+import adapter from '@sveltejs/adapter-netlify';
 
-/** @type {import('@sveltejs/kit').Config} */
 const config = {
   kit: {
-    adapter: adapter({ fallback: '404.html' }),
-    prerender: { default: true },
+    adapter: adapter({
+      // opcional: onde você guardou suas Netlify Functions
+      functions: 'netlify/functions',
+    }),
+    // não precisa mais de fallback nem prerender
     paths: { base: '' }
   }
 };
