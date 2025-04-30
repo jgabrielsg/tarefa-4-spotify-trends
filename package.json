@@ -11,9 +11,7 @@
 	  "@sveltejs/adapter-vercel": "^5.7.0",
 	  "@sveltejs/kit": "^2.20.7",
 	  "vite": "^6.0.0",
-	  "svelte": "^5.0.0",
-	  "mdsvex": "^0.12.5",
-	  "svelte-preprocess": "^6.0.3"
+	  "svelte": "^5.0.0"
 	},
 	"dependencies": {
 	  "@duckdb/duckdb-wasm": "^1.29.1-dev132.0",
@@ -21,8 +19,7 @@
 	  "csv-parser": "^3.2.0",
 	  "d3": "^7.9.0",
 	  "dotenv": "^16.5.0",
-	  "node-fetch": "^3.3.2",
-	  "papaparse": "^5.5.2"
+	  "node-fetch": "^3.3.2"
 	},
 	"engines": {
 	  "node": "22.x"

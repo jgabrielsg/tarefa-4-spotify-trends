@@ -538,7 +538,7 @@ const options = {
 		<div class="error">
 			<span class="status">` + status + '</span>\n			<div class="message">\n				<h1>' + message + "</h1>\n			</div>\n		</div>\n	</body>\n</html>\n"
   },
-  version_hash: "t0ey7n"
+  version_hash: "ba75fa"
 };
 async function get_hooks() {
   let handle;
