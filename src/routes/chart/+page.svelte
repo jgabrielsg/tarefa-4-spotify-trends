@@ -36,7 +36,7 @@
     if (rank)     qs.set('rank', rank);
 
     try {
-        const res = await fetch(`/.netlify/functions/chart?${qs}`, { signal: controller.signal });
+      const buf = await fs.readFile(new URL('./public/charts.duck.db', import.meta.url));
         if (res.ok) {
             const responseData = await res.json();
             datajson = responseData.data || [];

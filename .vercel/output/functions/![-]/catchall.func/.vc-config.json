@@ -1,0 +1,10 @@
+{
+	"runtime": "nodejs22.x",
+	"handler": "..\\..\\..\\..\\..\\..\\..\\..\\..\\..\\Users\\João Gabriel\\Desktop\\FGV_Pastas\\5oPeriodo\\Visualizacao_de_dados\\T4\\jg\\tarefa-4-spotify-trends\\.svelte-kit\\vercel-tmp\\index.js",
+	"launcherType": "Nodejs",
+	"experimentalResponseStreaming": true,
+	"framework": {
+		"slug": "sveltekit",
+		"version": "2.20.7"
+	}
+}

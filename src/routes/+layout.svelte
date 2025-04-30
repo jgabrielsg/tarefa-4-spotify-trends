@@ -37,7 +37,7 @@
 
 <aside class="sidebar">
     <div class="logo">
-        <img src="images/spotifylogo.png" alt="Logo" />
+        <img src="/images/coldplaylogo.jpg" alt="Logo" />
     </div>
 
     <nav class="nav-links">
