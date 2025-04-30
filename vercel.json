@@ -1,24 +1,19 @@
 {
-    "version": 2,
-    "builds": [
-      {
-        "src": "src/routes/api/**/*.js",
-        "use": "@vercel/node"
-      },
-      {
-        "src": "svelte.config.js",
-        "use": "@sveltejs/adapter-vercel"
-      }
-    ],
-    "routes": [
-      {
-        "src": "/api/(.*)",
-        "dest": "/src/routes/api/$1.js"
-      },
-      {
-        "src": "/(.*)",
-        "dest": "/index.html"
-      }
-    ]
-  }
-  
+  "version": 2,
+  "builds": [
+    {
+      "src": "src/routes/api/**/*.js",
+      "use": "@vercel/node"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/api/(.*)",
+      "dest": "/src/routes/api/$1.js"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/index.html"
+    }
+  ]
+}
